@@ -1,11 +1,8 @@
+import React from "react";
 import Image from "next/image";
-import { FeaturedProperty } from "@/lib/mockData";
+import { featuredProperties, FeaturedProperty } from "@/lib/mockData";
 
-interface FeaturedPropertyCardProps {
-    property: FeaturedProperty;
-}
-
-export default function FeaturedPropertyCard({ property }: FeaturedPropertyCardProps) {
+function FeaturedPropertyCard({ property }: { property: FeaturedProperty }) {
     return (
         <div className="group relative rounded-xl overflow-hidden shadow-soft bg-white  cursor-pointer">
             <div className="aspect-[4/3] w-full overflow-hidden relative">
@@ -51,5 +48,33 @@ export default function FeaturedPropertyCard({ property }: FeaturedPropertyCardP
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function FeaturedCollection() {
+    return (
+        <section className="mb-16">
+            <div className="flex items-end justify-between mb-8">
+                <div>
+                    <h2 className="text-2xl font-light text-nordic-dark ">
+                        Featured Collections
+                    </h2>
+                    <p className="text-nordic-muted mt-1 text-sm">
+                        Curated properties for the discerning eye.
+                    </p>
+                </div>
+                <a
+                    className="hidden sm:flex items-center gap-1 text-sm font-medium text-mosque hover:opacity-70 transition-opacity"
+                    href="#"
+                >
+                    View all <span className="material-icons text-sm">arrow_forward</span>
+                </a>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {featuredProperties.map((property) => (
+                    <FeaturedPropertyCard key={property.id} property={property} />
+                ))}
+            </div>
+        </section>
     );
 }

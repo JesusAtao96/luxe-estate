@@ -1,4 +1,6 @@
-export default function SearchSection() {
+import React from "react";
+
+export default function Hero() {
     return (
         <section className="py-12 md:py-16">
             <div className="max-w-3xl mx-auto text-center space-y-8">
