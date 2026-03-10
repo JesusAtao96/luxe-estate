@@ -1,6 +1,63 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import FilterModal, { FilterOptions } from "./FilterModal";
 
 export default function Hero() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [searchInput, setSearchInput] = useState(searchParams?.get("query") || "");
+
+    const handleSearch = () => {
+        const params = new URLSearchParams(searchParams?.toString() || "");
+        if (searchInput) {
+            params.set("query", searchInput);
+        } else {
+            params.delete("query");
+        }
+        params.set("page", "1");
+        router.push(`/?${params.toString()}`);
+    };
+
+    const handleApplyFilters = (filters: FilterOptions) => {
+        const params = new URLSearchParams(searchParams?.toString() || "");
+
+        if (filters.query) params.set("query", filters.query);
+        else params.delete("query");
+
+        if (filters.minPrice) params.set("minPrice", filters.minPrice);
+        else params.delete("minPrice");
+
+        if (filters.maxPrice) params.set("maxPrice", filters.maxPrice);
+        else params.delete("maxPrice");
+
+        if (filters.propertyType) params.set("propertyType", filters.propertyType);
+        else params.delete("propertyType");
+
+        if (filters.beds) params.set("beds", filters.beds.toString());
+        else params.delete("beds");
+
+        if (filters.baths) params.set("baths", filters.baths.toString());
+        else params.delete("baths");
+
+        params.set("page", "1");
+        router.push(`/?${params.toString()}`);
+    };
+
+    const handleTypeFilter = (type: string) => {
+        const params = new URLSearchParams(searchParams?.toString() || "");
+        if (type === "All") {
+            params.delete("propertyType");
+        } else {
+            params.set("propertyType", type);
+        }
+        params.set("page", "1");
+        router.push(`/?${params.toString()}`);
+    };
+
+    const currentType = searchParams?.get("propertyType") || "All";
     return (
         <section className="py-12 md:py-16">
             <div className="max-w-3xl mx-auto text-center space-y-8">
@@ -22,33 +79,63 @@ export default function Hero() {
                         className="block w-full pl-12 pr-4 py-4 rounded-xl border-none bg-white  text-nordic-dark  shadow-soft placeholder-nordic-muted/60 focus:ring-2 focus:ring-mosque focus:bg-white  transition-all text-lg focus:outline-none"
                         placeholder="Search by city, neighborhood, or address..."
                         type="text"
+                        value={searchInput}
+                        onChange={(e) => setSearchInput(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                     />
-                    <button className="absolute inset-y-2 right-2 px-6 bg-mosque hover:bg-mosque/90 text-white font-medium rounded-lg transition-colors flex items-center justify-center shadow-lg shadow-mosque/20">
+                    <button
+                        onClick={handleSearch}
+                        className="absolute inset-y-2 right-2 px-6 bg-mosque hover:bg-mosque/90 text-white font-medium rounded-lg transition-colors flex items-center justify-center shadow-lg shadow-mosque/20"
+                    >
                         Search
                     </button>
                 </div>
                 <div className="flex items-center justify-center gap-3 overflow-x-auto hide-scroll py-2 px-4 -mx-4">
-                    <button className="whitespace-nowrap px-5 py-2 rounded-full bg-nordic-dark text-white text-sm font-medium shadow-lg shadow-nordic-dark/10 transition-transform hover:-translate-y-0.5 whitespace-nowrap">
+                    <button
+                        onClick={() => handleTypeFilter("All")}
+                        className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-transform hover:-translate-y-0.5 ${currentType === "All" ? "bg-nordic-dark text-white shadow-lg shadow-nordic-dark/10" : "bg-white border border-nordic-dark/5 text-nordic-muted hover:text-nordic-dark hover:border-mosque/50 hover:bg-mosque/5"}`}
+                    >
                         All
                     </button>
-                    <button className="whitespace-nowrap px-5 py-2 rounded-full bg-white  border border-nordic-dark/5 text-nordic-muted hover:text-nordic-dark hover:border-mosque/50 text-sm font-medium transition-all hover:bg-mosque/5 whitespace-nowrap">
+                    <button
+                        onClick={() => handleTypeFilter("House")}
+                        className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all ${currentType === "House" ? "bg-nordic-dark text-white shadow-lg" : "bg-white border border-nordic-dark/5 text-nordic-muted hover:text-nordic-dark hover:border-mosque/50 hover:bg-mosque/5"}`}
+                    >
                         House
                     </button>
-                    <button className="whitespace-nowrap px-5 py-2 rounded-full bg-white  border border-nordic-dark/5 text-nordic-muted hover:text-nordic-dark hover:border-mosque/50 text-sm font-medium transition-all hover:bg-mosque/5 whitespace-nowrap">
+                    <button
+                        onClick={() => handleTypeFilter("Apartment")}
+                        className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all ${currentType === "Apartment" ? "bg-nordic-dark text-white shadow-lg" : "bg-white border border-nordic-dark/5 text-nordic-muted hover:text-nordic-dark hover:border-mosque/50 hover:bg-mosque/5"}`}
+                    >
                         Apartment
                     </button>
-                    <button className="whitespace-nowrap px-5 py-2 rounded-full bg-white  border border-nordic-dark/5 text-nordic-muted hover:text-nordic-dark hover:border-mosque/50 text-sm font-medium transition-all hover:bg-mosque/5 whitespace-nowrap">
+                    <button
+                        onClick={() => handleTypeFilter("Villa")}
+                        className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all ${currentType === "Villa" ? "bg-nordic-dark text-white shadow-lg" : "bg-white border border-nordic-dark/5 text-nordic-muted hover:text-nordic-dark hover:border-mosque/50 hover:bg-mosque/5"}`}
+                    >
                         Villa
                     </button>
-                    <button className="whitespace-nowrap px-5 py-2 rounded-full bg-white  border border-nordic-dark/5 text-nordic-muted hover:text-nordic-dark hover:border-mosque/50 text-sm font-medium transition-all hover:bg-mosque/5 whitespace-nowrap">
+                    <button
+                        onClick={() => handleTypeFilter("Penthouse")}
+                        className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all ${currentType === "Penthouse" ? "bg-nordic-dark text-white shadow-lg" : "bg-white border border-nordic-dark/5 text-nordic-muted hover:text-nordic-dark hover:border-mosque/50 hover:bg-mosque/5"}`}
+                    >
                         Penthouse
                     </button>
                     <div className="min-w-[1px] w-[1px] h-6 bg-nordic-dark/10 mx-2"></div>
-                    <button className="whitespace-nowrap flex items-center gap-1 px-4 py-2 rounded-full text-nordic-dark font-medium text-sm hover:bg-black/5  transition-colors whitespace-nowrap">
+                    <button
+                        onClick={() => setIsFilterOpen(true)}
+                        className="whitespace-nowrap flex items-center gap-1 px-4 py-2 rounded-full text-nordic-dark font-medium text-sm hover:bg-black/5 transition-colors"
+                    >
                         <span className="material-icons text-base">tune</span> Filters
                     </button>
                 </div>
             </div>
+
+            <FilterModal
+                isOpen={isFilterOpen}
+                onClose={() => setIsFilterOpen(false)}
+                onApplyFilters={handleApplyFilters}
+            />
         </section>
     );
 }

@@ -6,7 +6,15 @@ import { getFeaturedProperties, getStandardProperties } from "@/lib/properties";
 const PAGE_SIZE = 6;
 
 interface HomeProps {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{
+    page?: string;
+    query?: string;
+    minPrice?: string;
+    maxPrice?: string;
+    propertyType?: string;
+    beds?: string;
+    baths?: string;
+  }>;
 }
 
 export default async function Home({ searchParams }: HomeProps) {
@@ -15,7 +23,7 @@ export default async function Home({ searchParams }: HomeProps) {
 
   const [featuredResult, standardResult] = await Promise.all([
     getFeaturedProperties(),
-    getStandardProperties(currentPage, PAGE_SIZE),
+    getStandardProperties(currentPage, PAGE_SIZE, params),
   ]);
 
   return (

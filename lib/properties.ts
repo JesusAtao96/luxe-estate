@@ -68,15 +68,38 @@ export async function getFeaturedProperties(): Promise<FeaturedProperty[]> {
 
 export async function getStandardProperties(
     page: number = 1,
-    pageSize: number = 6
+    pageSize: number = 6,
+    filters?: {
+        query?: string;
+        minPrice?: string;
+        maxPrice?: string;
+        propertyType?: string;
+        beds?: string;
+        baths?: string;
+    }
 ): Promise<PaginatedResult<StandardProperty>> {
     const from = (page - 1) * pageSize;
     const to = from + pageSize - 1;
 
-    const { data, error, count } = await supabase
+    let query = supabase
         .from("properties")
         .select("*", { count: "exact" })
-        .eq("type", "standard")
+        .eq("type", "standard");
+
+    if (filters?.query) {
+        query = query.or(`location.ilike.%${filters.query}%,title.ilike.%${filters.query}%`);
+    }
+    if (filters?.propertyType && filters.propertyType !== "Any Type" && filters.propertyType !== "All") {
+        query = query.eq("tag", filters.propertyType); // Store propertyType in 'tag' column
+    }
+    if (filters?.beds) {
+        query = query.gte("beds", parseInt(filters.beds, 10));
+    }
+    if (filters?.baths) {
+        query = query.gte("baths", parseInt(filters.baths, 10));
+    }
+
+    const { data, error, count } = await query
         .order("id")
         .range(from, to);
 
