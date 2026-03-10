@@ -1,0 +1,52 @@
+{
+    "navbar": {
+        "buy": "Comprar",
+        "rent": "Alquilar",
+        "sell": "Vender",
+        "savedHomes": "Casas Guardadas"
+    },
+    "hero": {
+        "titleStart": "Encuentra tu",
+        "titleHighlight": "santuario",
+        "placeholder": "Buscar por ciudad, barrio o dirección...",
+        "search": "Buscar",
+        "filterAll": "Todos",
+        "filterHouse": "Casa",
+        "filterApartment": "Apartamento",
+        "filterVilla": "Villa",
+        "filterPenthouse": "Penthouse",
+        "filters": "Filtros"
+    },
+    "featured": {
+        "title": "Colecciones Destacadas",
+        "subtitle": "Propiedades curadas para ojos exigentes.",
+        "viewAll": "Ver todo",
+        "beds": "Camas",
+        "baths": "Baños"
+    },
+    "newInMarket": {
+        "title": "Nuevos en el Mercado",
+        "subtitle": "Nuevas oportunidades añadidas esta semana.",
+        "all": "Todos",
+        "buy": "Comprar",
+        "rent": "Alquilar"
+    },
+    "property": {
+        "notFound": "Propiedad no encontrada",
+        "viewAllPhotos": "Ver todas las fotos",
+        "scheduleVisit": "Agendar visita",
+        "contactAgent": "Contactar Agente",
+        "propertyFeatures": "Características de la Propiedad",
+        "aboutThisHome": "Acerca de este hogar",
+        "readMore": "Leer más",
+        "amenities": "Comodidades",
+        "estimatedPayment": "Pago Estimado",
+        "startingFrom": "Desde",
+        "withDown": "con 20% de enganche",
+        "calculateMortgage": "Calcular Hipoteca",
+        "squareMeters": "Metros cuadrados",
+        "bedrooms": "Habitaciones",
+        "bathrooms": "Baños",
+        "garage": "Garaje"
+    }
+}

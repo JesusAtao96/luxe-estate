@@ -73,33 +73,35 @@ interface NewInMarketProps {
     properties: StandardProperty[];
     currentPage: number;
     totalPages: number;
+    dict: Record<string, string>;
 }
 
 export default function NewInMarket({
     properties,
     currentPage,
     totalPages,
+    dict,
 }: NewInMarketProps) {
     return (
         <section>
             <div className="flex items-end justify-between mb-8">
                 <div>
                     <h2 className="text-2xl font-light text-nordic-dark">
-                        New in Market
+                        {dict.title}
                     </h2>
                     <p className="text-nordic-muted mt-1 text-sm">
-                        Fresh opportunities added this week.
+                        {dict.subtitle}
                     </p>
                 </div>
                 <div className="hidden md:flex bg-white p-1 rounded-lg">
                     <button className="px-4 py-1.5 rounded-md text-sm font-medium bg-nordic-dark text-white shadow-sm">
-                        All
+                        {dict.all}
                     </button>
                     <button className="px-4 py-1.5 rounded-md text-sm font-medium text-nordic-muted hover:text-nordic-dark">
-                        Buy
+                        {dict.buy}
                     </button>
                     <button className="px-4 py-1.5 rounded-md text-sm font-medium text-nordic-muted hover:text-nordic-dark">
-                        Rent
+                        {dict.rent}
                     </button>
                 </div>
             </div>

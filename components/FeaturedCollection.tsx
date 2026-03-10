@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FeaturedProperty } from "@/lib/properties";
 
-function FeaturedPropertyCard({ property }: { property: FeaturedProperty }) {
+function FeaturedPropertyCard({ property, dict }: { property: FeaturedProperty, dict: Record<string, string> }) {
     return (
         <Link href={`/properties/${property.slug}`} className="group relative rounded-xl overflow-hidden shadow-soft bg-white cursor-pointer block">
             <div className="aspect-[4/3] w-full overflow-hidden relative">
@@ -44,11 +44,11 @@ function FeaturedPropertyCard({ property }: { property: FeaturedProperty }) {
                 <div className="flex items-center gap-6 mt-6 pt-6 border-t border-nordic-dark/5">
                     <div className="flex items-center gap-2 text-nordic-muted text-sm">
                         <span className="material-icons text-lg">king_bed</span>{" "}
-                        {property.beds} Beds
+                        {property.beds} {dict.beds}
                     </div>
                     <div className="flex items-center gap-2 text-nordic-muted text-sm">
                         <span className="material-icons text-lg">bathtub</span>{" "}
-                        {property.baths} Baths
+                        {property.baths} {dict.baths}
                     </div>
                     <div className="flex items-center gap-2 text-nordic-muted text-sm">
                         <span className="material-icons text-lg">square_foot</span>{" "}
@@ -62,31 +62,32 @@ function FeaturedPropertyCard({ property }: { property: FeaturedProperty }) {
 
 interface FeaturedCollectionProps {
     properties: FeaturedProperty[];
+    dict: Record<string, string>;
 }
 
-export default function FeaturedCollection({ properties }: FeaturedCollectionProps) {
+export default function FeaturedCollection({ properties, dict }: FeaturedCollectionProps) {
     return (
         <section className="mb-16">
             <div className="flex items-end justify-between mb-8">
                 <div>
                     <h2 className="text-2xl font-light text-nordic-dark">
-                        Featured Collections
+                        {dict.title}
                     </h2>
                     <p className="text-nordic-muted mt-1 text-sm">
-                        Curated properties for the discerning eye.
+                        {dict.subtitle}
                     </p>
                 </div>
                 <a
                     className="hidden sm:flex items-center gap-1 text-sm font-medium text-mosque hover:opacity-70 transition-opacity"
                     href="#"
                 >
-                    View all{" "}
+                    {dict.viewAll}{" "}
                     <span className="material-icons text-sm">arrow_forward</span>
                 </a>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {properties.map((property) => (
-                    <FeaturedPropertyCard key={property.id} property={property} />
+                    <FeaturedPropertyCard key={property.id} property={property} dict={dict} />
                 ))}
             </div>
         </section>

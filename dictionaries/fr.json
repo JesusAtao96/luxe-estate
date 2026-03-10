@@ -1,0 +1,52 @@
+{
+    "navbar": {
+        "buy": "Acheter",
+        "rent": "Louer",
+        "sell": "Vendre",
+        "savedHomes": "Maisons Sauvegardées"
+    },
+    "hero": {
+        "titleStart": "Trouvez votre",
+        "titleHighlight": "sanctuaire",
+        "placeholder": "Rechercher par ville, quartier ou adresse...",
+        "search": "Rechercher",
+        "filterAll": "Tous",
+        "filterHouse": "Maison",
+        "filterApartment": "Appartement",
+        "filterVilla": "Villa",
+        "filterPenthouse": "Penthouse",
+        "filters": "Filtres"
+    },
+    "featured": {
+        "title": "Collections en vedette",
+        "subtitle": "Propriétés sélectionnées pour les plus exigeants.",
+        "viewAll": "Voir tout",
+        "beds": "Lits",
+        "baths": "Bains"
+    },
+    "newInMarket": {
+        "title": "Nouveaux sur le marché",
+        "subtitle": "Nouvelles opportunités ajoutées cette semaine.",
+        "all": "Tous",
+        "buy": "Acheter",
+        "rent": "Louer"
+    },
+    "property": {
+        "notFound": "Propriété introuvable",
+        "viewAllPhotos": "Voir toutes les photos",
+        "scheduleVisit": "Planifier une visite",
+        "contactAgent": "Contacter l'Agent",
+        "propertyFeatures": "Caractéristiques de la Propriété",
+        "aboutThisHome": "À propos de cette maison",
+        "readMore": "Lire la suite",
+        "amenities": "Commodités",
+        "estimatedPayment": "Paiement estimé",
+        "startingFrom": "A partir de",
+        "withDown": "avec 20% d'acompte",
+        "calculateMortgage": "Calculer l'hypothèque",
+        "squareMeters": "Mètres carrés",
+        "bedrooms": "Chambres",
+        "bathrooms": "Salles de bain",
+        "garage": "Garage"
+    }
+}

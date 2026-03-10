@@ -1,0 +1,52 @@
+{
+    "navbar": {
+        "buy": "Buy",
+        "rent": "Rent",
+        "sell": "Sell",
+        "savedHomes": "Saved Homes"
+    },
+    "hero": {
+        "titleStart": "Find your",
+        "titleHighlight": "sanctuary",
+        "placeholder": "Search by city, neighborhood, or address...",
+        "search": "Search",
+        "filterAll": "All",
+        "filterHouse": "House",
+        "filterApartment": "Apartment",
+        "filterVilla": "Villa",
+        "filterPenthouse": "Penthouse",
+        "filters": "Filters"
+    },
+    "featured": {
+        "title": "Featured Collections",
+        "subtitle": "Curated properties for the discerning eye.",
+        "viewAll": "View all",
+        "beds": "Beds",
+        "baths": "Baths"
+    },
+    "newInMarket": {
+        "title": "New in Market",
+        "subtitle": "Fresh opportunities added this week.",
+        "all": "All",
+        "buy": "Buy",
+        "rent": "Rent"
+    },
+    "property": {
+        "notFound": "Property Not Found",
+        "viewAllPhotos": "View All Photos",
+        "scheduleVisit": "Schedule Visit",
+        "contactAgent": "Contact Agent",
+        "propertyFeatures": "Property Features",
+        "aboutThisHome": "About this home",
+        "readMore": "Read more",
+        "amenities": "Amenities",
+        "estimatedPayment": "Estimated Payment",
+        "startingFrom": "Starting from",
+        "withDown": "with 20% down",
+        "calculateMortgage": "Calculate Mortgage",
+        "squareMeters": "Square Meters",
+        "bedrooms": "Bedrooms",
+        "bathrooms": "Bathrooms",
+        "garage": "Garage"
+    }
+}

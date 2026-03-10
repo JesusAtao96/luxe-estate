@@ -3,14 +3,21 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import DynamicMap from "@/components/DynamicMap";
 import { getPropertyBySlug } from "@/lib/properties";
+import { cookies } from "next/headers";
+import { getDictionary, defaultLocale, Locale, locales } from "@/lib/dictionaries";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
     const { slug } = await params;
     const property = await getPropertyBySlug(slug);
 
+    const cookieStore = await cookies();
+    const localeCookie = cookieStore.get('NEXT_LOCALE')?.value as Locale | undefined;
+    const currentLocale = localeCookie && locales.includes(localeCookie) ? localeCookie : defaultLocale;
+    const dict = await getDictionary(currentLocale);
+
     if (!property) {
         return {
-            title: "Property Not Found | LuxeEstate",
+            title: `${dict.property.notFound} | LuxeEstate`,
         };
     }
 
@@ -19,7 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         description: `Explore ${property.title} located at ${property.location}. Price: ${property.price}.`,
         openGraph: {
             title: `${property.title} - ${property.price}`,
-            description: `${property.beds} Beds, ${property.baths} Baths in ${property.location}`,
+            description: `${property.beds} ${dict.property.bedrooms}, ${property.baths} ${dict.property.bathrooms} in ${property.location}`,
             images: [property.images[0] || "/placeholder.jpg"],
         },
     };
@@ -28,6 +35,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function PropertyDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
     const property = await getPropertyBySlug(slug);
+
+    const cookieStore = await cookies();
+    const localeCookie = cookieStore.get('NEXT_LOCALE')?.value as Locale | undefined;
+    const currentLocale = localeCookie && locales.includes(localeCookie) ? localeCookie : defaultLocale;
+    const dict = await getDictionary(currentLocale);
 
     if (!property) {
         notFound();
@@ -64,7 +76,7 @@ export default async function PropertyDetailsPage({ params }: { params: Promise<
                         </div>
                         <button className="absolute bottom-4 right-4 bg-white/90 hover:bg-white text-nordic-dark px-4 py-2 rounded-lg text-sm font-medium shadow-lg backdrop-blur transition-all flex items-center gap-2">
                             <span className="material-icons text-sm">grid_view</span>
-                            View All Photos
+                            {dict.property.viewAllPhotos}
                         </button>
                     </div>
 
@@ -131,11 +143,11 @@ export default async function PropertyDetailsPage({ params }: { params: Promise<
                             <div className="space-y-3">
                                 <button className="w-full bg-mosque hover:bg-mosque/90 text-white py-4 px-6 rounded-lg font-medium transition-all shadow-lg shadow-mosque/20 flex items-center justify-center gap-2 group">
                                     <span className="material-icons text-xl group-hover:scale-110 transition-transform">calendar_today</span>
-                                    Schedule Visit
+                                    {dict.property.scheduleVisit}
                                 </button>
                                 <button className="w-full bg-transparent border border-nordic-dark/10 hover:border-mosque text-nordic-dark/80 hover:text-mosque py-4 px-6 rounded-lg font-medium transition-all flex items-center justify-center gap-2">
                                     <span className="material-icons text-xl">mail_outline</span>
-                                    Contact Agent
+                                    {dict.property.contactAgent}
                                 </button>
                             </div>
                         </div>
@@ -153,34 +165,34 @@ export default async function PropertyDetailsPage({ params }: { params: Promise<
                 <div className="lg:col-span-8 lg:row-start-2 -mt-8 space-y-8">
                     {/* Features */}
                     <div className="bg-white p-8 rounded-xl shadow-sm border border-mosque/5">
-                        <h2 className="text-lg font-semibold mb-6 text-nordic-dark">Property Features</h2>
+                        <h2 className="text-lg font-semibold mb-6 text-nordic-dark">{dict.property.propertyFeatures}</h2>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                             <div className="flex flex-col items-center justify-center p-4 bg-mosque/5 rounded-lg border border-mosque/10">
                                 <span className="material-icons text-mosque text-2xl mb-2">square_foot</span>
                                 <span className="text-xl font-bold text-nordic-dark">{property.area}</span>
-                                <span className="text-xs uppercase tracking-wider text-nordic-dark/50">Square Meters</span>
+                                <span className="text-xs uppercase tracking-wider text-nordic-dark/50">{dict.property.squareMeters}</span>
                             </div>
                             <div className="flex flex-col items-center justify-center p-4 bg-mosque/5 rounded-lg border border-mosque/10">
                                 <span className="material-icons text-mosque text-2xl mb-2">bed</span>
                                 <span className="text-xl font-bold text-nordic-dark">{property.beds}</span>
-                                <span className="text-xs uppercase tracking-wider text-nordic-dark/50">Bedrooms</span>
+                                <span className="text-xs uppercase tracking-wider text-nordic-dark/50">{dict.property.bedrooms}</span>
                             </div>
                             <div className="flex flex-col items-center justify-center p-4 bg-mosque/5 rounded-lg border border-mosque/10">
                                 <span className="material-icons text-mosque text-2xl mb-2">shower</span>
                                 <span className="text-xl font-bold text-nordic-dark">{property.baths}</span>
-                                <span className="text-xs uppercase tracking-wider text-nordic-dark/50">Bathrooms</span>
+                                <span className="text-xs uppercase tracking-wider text-nordic-dark/50">{dict.property.bathrooms}</span>
                             </div>
                             <div className="flex flex-col items-center justify-center p-4 bg-mosque/5 rounded-lg border border-mosque/10">
                                 <span className="material-icons text-mosque text-2xl mb-2">directions_car</span>
                                 <span className="text-xl font-bold text-nordic-dark">2</span>
-                                <span className="text-xs uppercase tracking-wider text-nordic-dark/50">Garage</span>
+                                <span className="text-xs uppercase tracking-wider text-nordic-dark/50">{dict.property.garage}</span>
                             </div>
                         </div>
                     </div>
 
                     {/* Description */}
                     <div className="bg-white p-8 rounded-xl shadow-sm border border-mosque/5">
-                        <h2 className="text-lg font-semibold mb-4 text-nordic-dark">About this home</h2>
+                        <h2 className="text-lg font-semibold mb-4 text-nordic-dark">{dict.property.aboutThisHome}</h2>
                         <div className="prose prose-slate max-w-none text-nordic-dark/70 leading-relaxed">
                             <p className="mb-4">
                                 Experience modern luxury in this architecturally stunning home located in {property.location}.
@@ -191,14 +203,14 @@ export default async function PropertyDetailsPage({ params }: { params: Promise<
                             </p>
                         </div>
                         <button className="mt-4 text-mosque font-semibold text-sm flex items-center gap-1 hover:gap-2 transition-all">
-                            Read more
+                            {dict.property.readMore}
                             <span className="material-icons text-sm">arrow_forward</span>
                         </button>
                     </div>
 
                     {/* Amenities */}
                     <div className="bg-white p-8 rounded-xl shadow-sm border border-mosque/5">
-                        <h2 className="text-lg font-semibold mb-6 text-nordic-dark">Amenities</h2>
+                        <h2 className="text-lg font-semibold mb-6 text-nordic-dark">{dict.property.amenities}</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-8">
                             {["Smart Home System", "Swimming Pool", "Central Heating & Cooling", "Electric Vehicle Charging", "Private Gym", "Wine Cellar"].map(amenity => (
                                 <div key={amenity} className="flex items-center gap-3 text-nordic-dark/70">
@@ -216,12 +228,12 @@ export default async function PropertyDetailsPage({ params }: { params: Promise<
                                 <span className="material-icons">calculate</span>
                             </div>
                             <div>
-                                <h3 className="font-semibold text-nordic-dark">Estimated Payment</h3>
-                                <p className="text-sm text-nordic-dark/60">Starting from <strong className="text-mosque">$5,430/mo</strong> with 20% down</p>
+                                <h3 className="font-semibold text-nordic-dark">{dict.property.estimatedPayment}</h3>
+                                <p className="text-sm text-nordic-dark/60">{dict.property.startingFrom} <strong className="text-mosque">$5,430/mo</strong> {dict.property.withDown}</p>
                             </div>
                         </div>
                         <button className="whitespace-nowrap px-4 py-2 bg-white border border-nordic-dark/10 rounded-lg text-sm font-semibold hover:border-mosque transition-colors text-nordic-dark">
-                            Calculate Mortgage
+                            {dict.property.calculateMortgage}
                         </button>
                     </div>
                 </div>
