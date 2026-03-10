@@ -43,7 +43,8 @@ export async function getFeaturedProperties(): Promise<FeaturedProperty[]> {
         .from("properties")
         .select("*")
         .eq("is_featured", true)
-        .order("id");
+        .order("id")
+        .limit(2);
 
     if (error) {
         console.error("Error fetching featured properties:", error);

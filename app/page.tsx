@@ -21,8 +21,17 @@ export default async function Home({ searchParams }: HomeProps) {
   const params = await searchParams;
   const currentPage = Math.max(1, parseInt(params.page ?? "1", 10));
 
+  const hasFilters = Boolean(
+    params.query ||
+    params.minPrice ||
+    params.maxPrice ||
+    (params.propertyType && params.propertyType !== "All" && params.propertyType !== "Any Type") ||
+    params.beds ||
+    params.baths
+  );
+
   const [featuredResult, standardResult] = await Promise.all([
-    getFeaturedProperties(),
+    hasFilters ? Promise.resolve([]) : getFeaturedProperties(),
     getStandardProperties(currentPage, PAGE_SIZE, params),
   ]);
 
@@ -30,7 +39,9 @@ export default async function Home({ searchParams }: HomeProps) {
     <>
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
         <Hero />
-        <FeaturedCollection properties={featuredResult} />
+        {!hasFilters && featuredResult.length > 0 && (
+          <FeaturedCollection properties={featuredResult} />
+        )}
         <NewInMarket
           properties={standardResult.data}
           currentPage={standardResult.currentPage}
