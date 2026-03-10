@@ -2,7 +2,7 @@ import { supabase } from "./supabase";
 
 export interface FeaturedProperty {
     id: string;
-    imageUrl: string;
+    images: string[];
     title: string;
     location: string;
     price: string;
@@ -10,11 +10,14 @@ export interface FeaturedProperty {
     baths: number;
     area: string;
     tag: string;
+    slug: string;
+    lat: number;
+    lng: number;
 }
 
 export interface StandardProperty {
     id: string;
-    imageUrl: string;
+    images: string[];
     title: string;
     location: string;
     price: string;
@@ -23,6 +26,9 @@ export interface StandardProperty {
     area: string;
     status: "FOR SALE" | "FOR RENT";
     priceSuffix?: string;
+    slug: string;
+    lat: number;
+    lng: number;
 }
 
 export interface PaginatedResult<T> {
@@ -46,7 +52,7 @@ export async function getFeaturedProperties(): Promise<FeaturedProperty[]> {
 
     return data.map((p) => ({
         id: p.id,
-        imageUrl: p.image_url,
+        images: p.images || [],
         title: p.title,
         location: p.location,
         price: p.price,
@@ -54,6 +60,9 @@ export async function getFeaturedProperties(): Promise<FeaturedProperty[]> {
         baths: Number(p.baths),
         area: p.area,
         tag: p.tag ?? "",
+        slug: p.slug ?? "",
+        lat: p.lat ?? 0,
+        lng: p.lng ?? 0,
     }));
 }
 
@@ -81,7 +90,7 @@ export async function getStandardProperties(
 
     const mapped: StandardProperty[] = (data ?? []).map((p) => ({
         id: p.id,
-        imageUrl: p.image_url,
+        images: p.images || [],
         title: p.title,
         location: p.location,
         price: p.price,
@@ -90,7 +99,52 @@ export async function getStandardProperties(
         area: p.area,
         status: p.status as "FOR SALE" | "FOR RENT",
         priceSuffix: p.price_suffix ?? undefined,
+        slug: p.slug ?? "",
+        lat: p.lat ?? 0,
+        lng: p.lng ?? 0,
     }));
 
     return { data: mapped, totalCount, totalPages, currentPage: page };
+}
+
+export async function getPropertyBySlug(slug: string): Promise<FeaturedProperty | StandardProperty | null> {
+    const { data, error } = await supabase
+        .from("properties")
+        .select("*")
+        .eq("slug", slug)
+        .single();
+
+    if (error || !data) {
+        if (error?.code !== 'PGRST116') {
+            console.error("Error fetching property by slug:", error);
+        }
+        return null;
+    }
+
+    const baseProperty = {
+        id: data.id,
+        images: data.images || [],
+        title: data.title,
+        location: data.location,
+        price: data.price,
+        beds: Number(data.beds),
+        baths: Number(data.baths),
+        area: data.area,
+        slug: data.slug ?? "",
+        lat: data.lat ?? 0,
+        lng: data.lng ?? 0,
+    };
+
+    if (data.is_featured) {
+        return {
+            ...baseProperty,
+            tag: data.tag ?? "",
+        } as FeaturedProperty;
+    }
+
+    return {
+        ...baseProperty,
+        status: data.status as "FOR SALE" | "FOR RENT",
+        priceSuffix: data.price_suffix ?? undefined,
+    } as StandardProperty;
 }

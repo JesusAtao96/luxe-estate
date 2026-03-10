@@ -1,14 +1,17 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { FeaturedProperty } from "@/lib/properties";
 
 function FeaturedPropertyCard({ property }: { property: FeaturedProperty }) {
     return (
-        <div className="group relative rounded-xl overflow-hidden shadow-soft bg-white cursor-pointer">
+        <Link href={`/properties/${property.slug}`} className="group relative rounded-xl overflow-hidden shadow-soft bg-white cursor-pointer block">
             <div className="aspect-[4/3] w-full overflow-hidden relative">
                 <Image
                     alt={property.title}
-                    src={property.imageUrl}
+                    src={property.images?.[0] || "/placeholder.jpg"}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -16,7 +19,9 @@ function FeaturedPropertyCard({ property }: { property: FeaturedProperty }) {
                 <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider text-nordic-dark">
                     {property.tag}
                 </div>
-                <button className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-nordic-dark hover:bg-mosque hover:text-white transition-all z-10">
+                <button className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-nordic-dark hover:bg-mosque hover:text-white transition-all z-10"
+                    onClick={(e) => e.preventDefault()}
+                >
                     <span className="material-icons text-xl">favorite_border</span>
                 </button>
                 <div className="absolute bottom-0 inset-x-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent opacity-60"></div>
@@ -51,7 +56,7 @@ function FeaturedPropertyCard({ property }: { property: FeaturedProperty }) {
                     </div>
                 </div>
             </div>
-        </div>
+        </Link>
     );
 }
 
