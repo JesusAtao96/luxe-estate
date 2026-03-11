@@ -31,9 +31,10 @@ export default function AdminNav() {
     router.push("/login");
   };
 
-  const avatarUrl = user?.email 
+  const socialAvatarUrl = user?.user_metadata?.avatar_url || user?.user_metadata?.picture;
+  const avatarUrl = socialAvatarUrl || (user?.email 
     ? `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`
-    : null;
+    : null);
 
   return (
     <nav className="sticky top-0 z-50 bg-white border-b border-mosque/10 backdrop-blur-md bg-opacity-90">

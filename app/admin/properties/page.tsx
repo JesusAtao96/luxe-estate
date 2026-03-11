@@ -1,8 +1,18 @@
+"use client";
+
 import { featuredProperties, standardProperties } from "@/lib/mockData";
 import Image from "next/image";
+import { useState } from "react";
+
+const ITEMS_PER_PAGE = 5;
 
 export default function AdminPropertiesPage() {
+  const [currentPage, setCurrentPage] = useState(1);
   const allProperties = [...featuredProperties, ...standardProperties];
+
+  const totalPages = Math.ceil(allProperties.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedProperties = allProperties.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   const activeProperties = allProperties.filter((p) => !('status' in p) || p.status === 'FOR SALE').length;
   const pendingSale = allProperties.filter((p) => 'status' in p && p.status === 'FOR RENT').length;
@@ -67,7 +77,7 @@ export default function AdminPropertiesPage() {
         </div>
 
         {/* List Items */}
-        {allProperties.map((property) => (
+        {paginatedProperties.map((property) => (
           <div key={property.id} className="group grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 border-b border-nordic-dark/5 hover:bg-background-light transition-colors items-center">
             {/* Property Details */}
             <div className="col-span-12 md:col-span-6 flex gap-4 items-center">
@@ -128,11 +138,23 @@ export default function AdminPropertiesPage() {
         {/* Pagination placeholder matching design */}
         <div className="px-6 py-4 border-t border-nordic-dark/5 flex items-center justify-between bg-neutral-50/50">
            <div className="text-sm text-nordic-dark/50">
-               Mostrando <span className="font-medium text-nordic-dark">1</span> a <span className="font-medium text-nordic-dark">{allProperties.length}</span> de <span className="font-medium text-nordic-dark">{allProperties.length}</span> resultados
+               Mostrando <span className="font-medium text-nordic-dark">{Math.min(startIndex + 1, allProperties.length)}</span> a <span className="font-medium text-nordic-dark">{Math.min(startIndex + ITEMS_PER_PAGE, allProperties.length)}</span> de <span className="font-medium text-nordic-dark">{allProperties.length}</span> resultados
            </div>
            <div className="flex gap-2">
-              <button className="px-3 py-1 text-sm border border-nordic-dark/10 rounded-md text-nordic-dark/60 hover:bg-white disabled:opacity-50" disabled>Anterior</button>
-              <button className="px-3 py-1 text-sm border border-nordic-dark/10 rounded-md text-nordic-dark/60 hover:bg-white disabled:opacity-50" disabled>Siguiente</button>
+              <button 
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="px-3 py-1 text-sm border border-nordic-dark/10 rounded-md text-nordic-dark/60 hover:bg-white disabled:opacity-50 transition-colors"
+                >
+                Anterior
+              </button>
+              <button 
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className="px-3 py-1 text-sm border border-nordic-dark/10 rounded-md text-nordic-dark/60 hover:bg-white disabled:opacity-50 transition-colors"
+                >
+                Siguiente
+              </button>
            </div>
         </div>
       </div>
