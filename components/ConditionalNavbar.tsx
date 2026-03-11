@@ -10,8 +10,8 @@ interface ConditionalNavbarProps {
 export default function ConditionalNavbar({ children }: ConditionalNavbarProps) {
   const pathname = usePathname();
 
-  // Hide the navbar on the login page
-  if (pathname === "/login") {
+  // Hide the navbar on the login page and admin pages
+  if (pathname === "/login" || pathname.startsWith("/admin")) {
     return null;
   }
 
