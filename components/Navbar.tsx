@@ -37,7 +37,7 @@ export default async function Navbar() {
                             <span className="material-icons">notifications_none</span>
                             <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-background-light "></span>
                         </button>
-                        <NavAuth />
+                        <NavAuth dict={dict.navbar} />
                     </div>
                 </div>
             </div>

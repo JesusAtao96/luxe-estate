@@ -6,7 +6,7 @@ import { User } from "@supabase/supabase-js";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function NavAuth() {
+export default function NavAuth({ dict }: { dict: { signIn: string, signOut: string } }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -38,7 +38,7 @@ export default function NavAuth() {
   if (!user) {
     return (
       <Link href="/login" className="ml-4 px-4 py-2 text-sm font-medium text-white bg-mosque rounded-lg hover:bg-mosque-dark transition-colors">
-        Sign In
+        {dict.signIn}
       </Link>
     );
   }
@@ -61,16 +61,16 @@ export default function NavAuth() {
       </div>
       
       {/* Dropdown for sign out */}
-      <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#152e2a] rounded-lg shadow-soft border border-gray-100 dark:border-mosque/20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+      <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-soft border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
         <div className="p-2">
-            <div className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-800 mb-1 truncate" title={user.email}>
+            <div className="px-3 py-2 text-sm text-gray-500 border-b border-gray-100 mb-1 truncate" title={user.email}>
                {user.email}
             </div>
             <button
             onClick={handleSignOut}
-            className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-md transition-colors"
+            className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
             >
-            Sign Out
+            {dict.signOut}
             </button>
         </div>
       </div>

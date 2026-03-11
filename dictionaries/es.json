@@ -3,7 +3,9 @@
         "buy": "Comprar",
         "rent": "Alquilar",
         "sell": "Vender",
-        "savedHomes": "Casas Guardadas"
+        "savedHomes": "Casas Guardadas",
+        "signIn": "Iniciar Sesión",
+        "signOut": "Cerrar Sesión"
     },
     "hero": {
         "titleStart": "Encuentra tu",
@@ -48,5 +50,17 @@
         "bedrooms": "Habitaciones",
         "bathrooms": "Baños",
         "garage": "Garaje"
+    },
+    "login": {
+        "welcome": "Bienvenido a LuxeEstate",
+        "subtitle": "Desbloquea propiedades exclusivas en todo el mundo.",
+        "continueWithGoogle": "Continuar con Google",
+        "continueWithGithub": "Continuar con GitHub",
+        "connecting": "Conectando...",
+        "dontHaveAccount": "¿No tienes una cuenta?",
+        "signUp": "Regístrate",
+        "privacyPolicy": "Política de Privacidad",
+        "termsOfService": "Términos de Servicio",
+        "helpCenter": "Centro de Ayuda"
     }
 }
