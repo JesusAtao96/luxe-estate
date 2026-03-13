@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import DynamicMap from "@/components/DynamicMap";
 import { createProperty, updateProperty, deletePropertyImage, PropertyFormData } from "@/lib/propertyActions";
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -87,8 +88,8 @@ export default function PropertyForm({ property, isEdit = false }: PropertyFormP
   const locationRef = useRef<HTMLInputElement>(null);
   const areaRef = useRef<HTMLInputElement>(null);
   const yearBuiltRef = useRef<HTMLInputElement>(null);
-  const latRef = useRef<HTMLInputElement>(null);
-  const lngRef = useRef<HTMLInputElement>(null);
+  const [lat, setLat] = useState<number | string>(property?.lat ?? "");
+  const [lng, setLng] = useState<number | string>(property?.lng ?? "");
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
   const priceSuffixRef = useRef<HTMLInputElement>(null);
   const isFeaturedRef = useRef<HTMLInputElement>(null);
@@ -153,8 +154,8 @@ export default function PropertyForm({ property, isEdit = false }: PropertyFormP
       status: (statusRef.current?.value as "FOR SALE" | "FOR RENT") || "FOR SALE",
       price_suffix: priceSuffixRef.current?.value || undefined,
       is_featured: isFeaturedRef.current?.checked ?? false,
-      lat: latRef.current?.value ? parseFloat(latRef.current.value) : null,
-      lng: lngRef.current?.value ? parseFloat(lngRef.current.value) : null,
+      lat: lat !== "" && !isNaN(parseFloat(lat.toString())) ? parseFloat(lat.toString()) : null,
+      lng: lng !== "" && !isNaN(parseFloat(lng.toString())) ? parseFloat(lng.toString()) : null,
       images: existingImageUrls,
       amenities: selectedAmenities,
     };
@@ -451,11 +452,11 @@ export default function PropertyForm({ property, isEdit = false }: PropertyFormP
               <div>
                 <label className="block text-xs font-medium text-nordic mb-1.5 font-sf-pro" htmlFor="lat">Latitud</label>
                 <input
-                  ref={latRef}
                   id="lat"
                   type="number"
                   step="any"
-                  defaultValue={property?.lat ?? ""}
+                  value={lat}
+                  onChange={(e) => setLat(e.target.value)}
                   placeholder="40.7128"
                   className="w-full px-3 py-2 rounded-md border-gray-200 bg-gray-50 text-nordic placeholder-gray-400 focus:ring-1 focus:ring-mosque focus:border-mosque focus:bg-white transition-all text-sm font-sf-pro"
                 />
@@ -463,24 +464,26 @@ export default function PropertyForm({ property, isEdit = false }: PropertyFormP
               <div>
                 <label className="block text-xs font-medium text-nordic mb-1.5 font-sf-pro" htmlFor="lng">Longitud</label>
                 <input
-                  ref={lngRef}
                   id="lng"
                   type="number"
                   step="any"
-                  defaultValue={property?.lng ?? ""}
+                  value={lng}
+                  onChange={(e) => setLng(e.target.value)}
                   placeholder="-74.0060"
                   className="w-full px-3 py-2 rounded-md border-gray-200 bg-gray-50 text-nordic placeholder-gray-400 focus:ring-1 focus:ring-mosque focus:border-mosque focus:bg-white transition-all text-sm font-sf-pro"
                 />
               </div>
             </div>
-            <div className="relative h-48 w-full rounded-lg overflow-hidden bg-gray-100 border border-gray-200 group mt-4">
-              <Image alt="Map view" width={800} height={200} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=800&q=80"/>
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <span className="bg-white/90 text-nordic px-3 py-1.5 rounded shadow-sm backdrop-blur-sm text-xs font-bold font-sf-pro flex items-center gap-1">
-                  <span className="material-icons text-sm text-mosque">map</span> Previsualizar
-                </span>
+            {lat !== "" && lng !== "" && !isNaN(parseFloat(lat.toString())) && !isNaN(parseFloat(lng.toString())) ? (
+              <div className="relative h-64 w-full rounded-lg overflow-hidden border border-gray-200 mt-4 z-0">
+                <DynamicMap lat={parseFloat(lat.toString())} lng={parseFloat(lng.toString())} className="w-full h-full" />
               </div>
-            </div>
+            ) : (
+              <div className="relative h-48 w-full rounded-lg overflow-hidden bg-gray-100 border border-gray-200 mt-4 flex flex-col items-center justify-center text-gray-400">
+                <span className="material-icons text-4xl mb-2 text-gray-300">map</span>
+                <p className="text-sm font-sf-pro mt-2">Ingresa latitud y longitud para ver el mapa</p>
+              </div>
+            )}
           </div>
         </div>
 
