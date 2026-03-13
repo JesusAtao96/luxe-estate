@@ -86,7 +86,7 @@ export default function UsersClientTable({ users }: { users: User[] }) {
                 </div>
                 <div>
                   <div className="text-[10px] uppercase tracking-wider text-nordic-dark/40">Registro</div>
-                  <div className="text-sm font-semibold text-nordic-dark">{new Date(user.created_at).toLocaleDateString()}</div>
+                  <div suppressHydrationWarning className="text-sm font-semibold text-nordic-dark">{new Date(user.created_at).toLocaleDateString()}</div>
                 </div>
               </div>
 

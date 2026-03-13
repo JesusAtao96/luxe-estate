@@ -1,19 +1,26 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-primary: #06f9d0;
-  --color-background-light: #EEF6F6;
+  --color-primary: #4fb5a4;
+  --color-primary-dark: #3a8e80;
+  --color-background-light: #f6f7f7;
+  --color-background-dark: #151d1c;
   
+  --color-nordic: #19322F;
   --color-nordic-dark: #19322F;
   --color-nordic-muted: #5C706D;
   --color-mosque: #006655;
+  --color-clear-day: #EEF6F6;
+  --color-hint-green: #D9ECC8;
   --color-hint-of-green: #D9ECC8;
 
-  --font-display: "SF Pro Display", "-apple-system", "BlinkMacSystemFont", "Inter", "sans-serif";
+  --font-display: "Newsreader", "serif";
+  --font-sf: "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif";
 
-  --radius-DEFAULT: 0.5rem;
-  --radius-lg: 1rem;
-  --radius-xl: 1.5rem;
+  --radius-DEFAULT: 0.25rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
   --radius-full: 9999px;
 
   --shadow-soft: 0 10px 40px -10px rgba(0,0,0,0.05);
@@ -28,7 +35,33 @@
   }
 }
 
+@utility font-sf-pro {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+textarea::-webkit-scrollbar {
+  width: 8px;
+}
+textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+textarea::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 4px;
+}
+input:focus, textarea:focus, select:focus {
+  --tw-ring-color: #006655 !important;
+  border-color: #006655 !important;
+  outline: none;
+  box-shadow: 0 0 0 1px #006655;
+}
 body {
   font-family: var(--font-display);
 }
-
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sf);
+  font-weight: 700;
+}
+label, button, input, select, textarea {
+  font-family: var(--font-sf);
+}
