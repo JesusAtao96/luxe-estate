@@ -14,16 +14,23 @@ export default function Hero({ dict, currentType: initialType = "All" }: HeroPro
     const searchParams = useSearchParams();
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [searchInput, setSearchInput] = useState(searchParams?.get("query") || "");
+    const currentQuery = searchParams?.get("query") || "";
+    const isSearchUnchanged = searchInput.trim() === currentQuery;
 
     const handleSearch = () => {
+        if (isSearchUnchanged) return;
+
         const params = new URLSearchParams(searchParams?.toString() || "");
-        if (searchInput) {
-            params.set("query", searchInput);
+        const trimmedSearch = searchInput.trim();
+        
+        if (trimmedSearch) {
+            params.set("query", trimmedSearch);
         } else {
             params.delete("query");
         }
         params.set("page", "1");
         router.push(`/?${params.toString()}`);
+        setSearchInput(trimmedSearch);
     };
 
     const handleApplyFilters = (filters: FilterOptions) => {
@@ -90,7 +97,12 @@ export default function Hero({ dict, currentType: initialType = "All" }: HeroPro
                     />
                     <button
                         onClick={handleSearch}
-                        className="absolute inset-y-2 right-2 px-6 bg-mosque hover:bg-mosque/90 text-white font-medium rounded-lg transition-colors flex items-center justify-center shadow-lg shadow-mosque/20"
+                        disabled={isSearchUnchanged}
+                        className={`absolute inset-y-2 right-2 px-6 font-medium rounded-lg transition-colors flex items-center justify-center shadow-lg shadow-mosque/20 ${
+                            isSearchUnchanged 
+                                ? 'bg-mosque/50 text-white/70 cursor-not-allowed' 
+                                : 'bg-mosque hover:bg-mosque/90 text-white'
+                        }`}
                     >
                         {dict.search}
                     </button>

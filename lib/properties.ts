@@ -13,6 +13,7 @@ export interface FeaturedProperty {
     slug: string;
     lat: number;
     lng: number;
+    is_active?: boolean;
 }
 
 export interface StandardProperty {
@@ -29,6 +30,7 @@ export interface StandardProperty {
     slug: string;
     lat: number;
     lng: number;
+    is_active?: boolean;
 }
 
 export interface PaginatedResult<T> {
@@ -43,6 +45,7 @@ export async function getFeaturedProperties(): Promise<FeaturedProperty[]> {
         .from("properties")
         .select("*")
         .eq("is_featured", true)
+        .eq("is_active", true)
         .order("id")
         .limit(2);
 
@@ -85,7 +88,8 @@ export async function getStandardProperties(
     let query = supabase
         .from("properties")
         .select("*", { count: "exact" })
-        .eq("type", "standard");
+        .eq("type", "standard")
+        .eq("is_active", true);
 
     if (filters?.query) {
         query = query.or(`location.ilike.%${filters.query}%,title.ilike.%${filters.query}%`);
@@ -136,6 +140,7 @@ export async function getPropertyBySlug(slug: string): Promise<FeaturedProperty 
         .from("properties")
         .select("*")
         .eq("slug", slug)
+        .eq("is_active", true)
         .single();
 
     if (error || !data) {

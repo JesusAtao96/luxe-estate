@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { getAllPropertiesForAdmin, deleteProperty } from "@/lib/propertyActions";
+import { getAllPropertiesForAdmin, deleteProperty, togglePropertyActiveStatus } from "@/lib/propertyActions";
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
@@ -22,6 +22,7 @@ interface Property {
   area: string;
   status: string;
   images: string[];
+  is_active: boolean;
 }
 
 export default function AdminPropertiesPage() {
@@ -69,7 +70,9 @@ export default function AdminPropertiesPage() {
       const deleteResult = await deleteProperty(id);
       
       if (deleteResult.success) {
-        setAllProperties((prev) => prev.filter((p) => p.id !== id));
+        setAllProperties((prev) => 
+          prev.map((p) => p.id === id ? { ...p, is_active: false } : p)
+        );
         
         // Use standard Toast configuration from SweetAlert2
         const Toast = MySwal.mixin({
@@ -86,12 +89,12 @@ export default function AdminPropertiesPage() {
 
         Toast.fire({
           icon: 'success',
-          title: 'Propiedad eliminada exitosamente'
+          title: 'Propiedad desactivada exitosamente'
         });
       } else {
         MySwal.fire({
           title: 'Error',
-          text: deleteResult.error || 'No se pudo eliminar la propiedad',
+          text: deleteResult.error || 'No se pudo desactivar la propiedad',
           icon: 'error',
           confirmButtonColor: '#006655'
         });
@@ -99,12 +102,53 @@ export default function AdminPropertiesPage() {
     }
   };
 
+  const handleToggleActive = async (id: string, currentStatus: boolean) => {
+    const newStatus = !currentStatus;
+    const actionText = newStatus ? 'activar' : 'desactivar';
+    
+    MySwal.fire({
+      title: 'Actualizando...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
+    const result = await togglePropertyActiveStatus(id, newStatus);
+    
+    if (result.success) {
+      setAllProperties((prev) => 
+        prev.map((p) => p.id === id ? { ...p, is_active: newStatus } : p)
+      );
+      
+      const Toast = MySwal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true
+      });
+
+      Toast.fire({
+        icon: 'success',
+        title: `Propiedad ${newStatus ? 'activada' : 'desactivada'} exitosamente`
+      });
+    } else {
+      MySwal.fire({
+        title: 'Error',
+        text: result.error || `No se pudo ${actionText} la propiedad`,
+        icon: 'error',
+        confirmButtonColor: '#006655'
+      });
+    }
+  };
+
   const totalPages = Math.ceil(allProperties.length / ITEMS_PER_PAGE) || 1;
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedProperties = allProperties.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
-  const activeProperties = allProperties.filter((p) => p.status === 'FOR SALE').length;
-  const pendingSale = allProperties.filter((p) => p.status === 'FOR RENT').length;
+  const activeProperties = allProperties.filter((p) => p.status === 'FOR SALE' && p.is_active).length;
+  const pendingSale = allProperties.filter((p) => p.status === 'FOR RENT' && p.is_active).length;
 
   return (
     <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow">
@@ -170,8 +214,8 @@ export default function AdminPropertiesPage() {
         <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-neutral-50/50 border-b border-nordic-dark/10 text-xs font-semibold text-nordic-dark/50 uppercase tracking-wider">
           <div className="col-span-6">Detalles de Propiedad</div>
           <div className="col-span-2">Precio</div>
-          <div className="col-span-2">Estado</div>
-          <div className="col-span-2 text-right">Acciones</div>
+          <div className="col-span-3">Estado y Disponibilidad</div>
+          <div className="col-span-1 text-right">Acciones</div>
         </div>
 
         {/* Loading State */}
@@ -227,23 +271,27 @@ export default function AdminPropertiesPage() {
             </div>
 
             {/* Status */}
-            <div className="col-span-6 md:col-span-2">
+            <div className="col-span-6 md:col-span-3 flex flex-col items-start gap-1">
               <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border
-                ${property.status === 'FOR SALE' && 'bg-hint-of-green text-mosque border-mosque/10'}
-                ${property.status === 'FOR RENT' && 'bg-orange-100 text-orange-700 border-orange-200'}
-                ${property.status === 'SOLD' && 'bg-gray-100 text-gray-600 border-gray-200'}
+                ${property.is_active ? 'bg-hint-of-green text-mosque border-mosque/10' : 'bg-red-50 text-red-600 border-red-200'}
               `}>
                 <span className={`w-1.5 h-1.5 rounded-full mr-1.5 
-                  ${property.status === 'FOR SALE' && 'bg-mosque'}
-                  ${property.status === 'FOR RENT' && 'bg-orange-500'}
-                  ${property.status === 'SOLD' && 'bg-gray-500'}
+                  ${property.is_active ? 'bg-mosque' : 'bg-red-500'}
                 `}></span>
-                {property.status === 'FOR SALE' ? 'Venta' : property.status === 'FOR RENT' ? 'Alquiler' : 'Vendido'}
+                {property.is_active ? 'Activo' : 'Inactivo'}
+              </span>
+
+              <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium
+                ${property.status === 'FOR SALE' && 'bg-blue-50 text-blue-700 border border-blue-100'}
+                ${property.status === 'FOR RENT' && 'bg-orange-50 text-orange-700 border border-orange-100'}
+                ${property.status === 'SOLD' && 'bg-gray-100 text-gray-600 border border-gray-200'}
+              `}>
+                {property.status === 'FOR SALE' ? 'En Venta' : property.status === 'FOR RENT' ? 'En Alquiler' : 'Vendido'}
               </span>
             </div>
 
             {/* Actions */}
-            <div className="col-span-12 md:col-span-2 flex items-center justify-end gap-2">
+            <div className="col-span-12 md:col-span-1 flex items-center justify-end gap-2">
               <Link
                 href={`/admin/properties/${property.id}/edit`}
                 className="p-2 rounded-lg text-nordic-dark/40 hover:text-mosque hover:bg-hint-of-green/50 transition-all"
@@ -251,13 +299,23 @@ export default function AdminPropertiesPage() {
               >
                 <span className="material-icons text-xl">edit</span>
               </Link>
-              <button 
-                onClick={() => handleDelete(property.id)}
-                className="p-2 rounded-lg text-nordic-dark/40 hover:text-red-600 hover:bg-red-50 transition-all tooltip-trigger" 
-                title="Eliminar Propiedad"
-              >
-                 <span className="material-icons text-xl">delete_outline</span>
-              </button>
+              {property.is_active ? (
+                <button 
+                  onClick={() => handleDelete(property.id)}
+                  className="p-2 rounded-lg text-nordic-dark/40 hover:text-red-600 hover:bg-red-50 transition-all tooltip-trigger" 
+                  title="Desactivar Propiedad"
+                >
+                   <span className="material-icons text-xl">delete_outline</span>
+                </button>
+              ) : (
+                <button 
+                  onClick={() => handleToggleActive(property.id, false)}
+                  className="p-2 rounded-lg text-nordic-dark/40 hover:text-green-600 hover:bg-green-50 transition-all tooltip-trigger" 
+                  title="Activar Propiedad"
+                >
+                   <span className="material-icons text-xl">restore</span>
+                </button>
+              )}
             </div>
           </div>
         ))}

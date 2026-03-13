@@ -23,6 +23,7 @@ export interface PropertyFormData {
   slug?: string;
   amenities?: string[];
   images?: string[];
+  is_active?: boolean;
 }
 
 function slugify(text: string): string {
@@ -114,6 +115,7 @@ export async function createProperty(
     slug,
     lat: formData.lat || null,
     lng: formData.lng || null,
+    is_active: formData.is_active ?? true,
   });
 
   if (error) {
@@ -166,6 +168,7 @@ export async function updateProperty(
       slug,
       lat: formData.lat || null,
       lng: formData.lng || null,
+      is_active: formData.is_active ?? true,
     })
     .eq("id", id);
 
@@ -208,7 +211,18 @@ export async function getAllPropertiesForAdmin() {
 
 export async function deleteProperty(id: string): Promise<{ success: boolean; error?: string }> {
   const supabase = await createClient();
-  const { error } = await supabase.from("properties").delete().eq("id", id);
+  const { error } = await supabase.from("properties").update({ is_active: false }).eq("id", id);
+  if (error) {
+    return { success: false, error: error.message };
+  }
+  revalidatePath("/admin/properties");
+  revalidatePath("/");
+  return { success: true };
+}
+
+export async function togglePropertyActiveStatus(id: string, is_active: boolean): Promise<{ success: boolean; error?: string }> {
+  const supabase = await createClient();
+  const { error } = await supabase.from("properties").update({ is_active }).eq("id", id);
   if (error) {
     return { success: false, error: error.message };
   }
